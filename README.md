@@ -1,0 +1,1 @@
+This is learning project with Spring boot stack (data, security, web mvc).
