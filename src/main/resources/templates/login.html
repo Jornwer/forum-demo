@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" class=" lqfyapsb idc0_326"><head>
+<html lang="en" class=" lqfyapsb idc0_326" xmlns:th="http://www.w3.org/1999/xhtml"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Please sign in</title>
+    <title>Sign in</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/styles.css}" />
 </head>
 <body>
 <div class="container">
-    <form class="form-signin" method="post" action="/login">
+    <form class="form-signin" method="post" action="/login" th:object="${AuthenticationRequestDTO}">
         <h2 class="form-signin-heading">Please sign in</h2>
         <p>
-            <label for="username" class="sr-only">Username</label>
-            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required="" autofocus="">
+            <label for="email" class="sr-only">Username</label>
+            <input type="text" id="email" name="email" class="form-control" placeholder="Username" required="" autofocus="">
         </p>
         <p>
             <label for="password" class="sr-only">Password</label>
@@ -23,6 +24,9 @@
         <input name="_csrf" type="hidden" value="8339171c-b066-47fc-a807-576a65cffd7a">
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
+</div>
+<div th:if="${invalidCredentials}">
+    <p class="validationError">Email or password is invalid</p>
 </div>
 </body>
 </html>
