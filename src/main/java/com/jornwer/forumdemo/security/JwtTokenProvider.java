@@ -12,9 +12,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.stream.Stream;
 
 @Component
 public class JwtTokenProvider {
@@ -73,7 +75,11 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(authorizationHeader);
+        return Stream.of(request.getCookies())
+                .filter(c -> c.getName().equals(authorizationHeader))
+                .map(Cookie::getValue)
+                .findAny()
+                .orElse(null);
     }
 
 }

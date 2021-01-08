@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +51,9 @@ public class AuthController {
             User user = userRepository.findUserByEmail(request.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User doesn't exists"));
             String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name());
-            response.addHeader(authorizationHeader, token);
+            Cookie cookie = new Cookie(authorizationHeader, token);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
             return "redirect:/";
         } catch (AuthenticationException e) {
             model.addAttribute("invalidCredentials", true);
