@@ -1,9 +1,10 @@
 package com.jornwer.forumdemo.controller;
 
-import com.jornwer.forumdemo.model.AuthenticationRequestDTO;
+import com.jornwer.forumdemo.dto.AuthenticationRequestDTO;
+import com.jornwer.forumdemo.dto.UserDTO;
 import com.jornwer.forumdemo.model.User;
-import com.jornwer.forumdemo.repository.UserRepository;
 import com.jornwer.forumdemo.security.JwtTokenProvider;
+import com.jornwer.forumdemo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,14 +13,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 @RequestMapping("/")
 @Controller
@@ -27,15 +29,15 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${jwt.header}")
     private String authorizationHeader;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtTokenProvider jwtTokenProvider) {
         this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -48,7 +50,7 @@ public class AuthController {
     public String authenticate(AuthenticationRequestDTO request, Model model, HttpServletResponse response) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-            User user = userRepository.findUserByEmail(request.getEmail())
+            User user = userService.findUserByEmail(request.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User doesn't exists"));
             String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name());
             Cookie cookie = new Cookie(authorizationHeader, token);
@@ -59,6 +61,27 @@ public class AuthController {
             model.addAttribute("invalidCredentials", true);
             return "login";
         }
+    }
+
+    @GetMapping("/signup")
+    public String signUp(Model model) {
+        model.addAttribute("UserDTO", new UserDTO());
+        return "signup";
+    }
+
+    @PostMapping("/signup")
+    public String registerNewUser(@Validated @ModelAttribute(value = "UserDTO") UserDTO request,
+                                  BindingResult errors,
+                                  Model model) {
+        if (userService.isUserRegistered(request.getEmail())) {
+            model.addAttribute("NonUniqueEmail", true);
+            return "signup";
+        }
+        if (errors.hasErrors() || model.containsAttribute("NonUniqueEmail")) {
+            return "signup";
+        }
+        userService.registerUser(request);
+        return "redirect:/";
     }
 
     @GetMapping("/logout")
