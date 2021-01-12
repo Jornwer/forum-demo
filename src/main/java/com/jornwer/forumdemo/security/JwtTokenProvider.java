@@ -75,6 +75,8 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
+        if (request.getCookies() == null)
+            return null;
         return Stream.of(request.getCookies())
                 .filter(c -> c.getName().equals(authorizationHeader))
                 .map(Cookie::getValue)

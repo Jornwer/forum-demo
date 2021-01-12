@@ -7,6 +7,7 @@ import com.jornwer.forumdemo.security.JwtTokenProvider;
 import com.jornwer.forumdemo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -16,11 +17,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequestMapping("/")
@@ -70,7 +72,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public String registerNewUser(@Validated @ModelAttribute(value = "UserDTO") UserDTO request,
+    public String registerNewUser(@Validated UserDTO request,
                                   BindingResult errors,
                                   Model model) {
         if (userService.isUserRegistered(request.getEmail())) {
@@ -82,10 +84,5 @@ public class AuthController {
         }
         userService.registerUser(request);
         return "redirect:/";
-    }
-
-    @GetMapping("/logout")
-    public String getLogoutPage() {
-        return "logout";
     }
 }

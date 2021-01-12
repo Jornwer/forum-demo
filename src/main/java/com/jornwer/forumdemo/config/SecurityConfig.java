@@ -1,6 +1,7 @@
 package com.jornwer.forumdemo.config;
 
 import com.jornwer.forumdemo.security.JwtConfigurer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.DelegatingLogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtConfigurer jwtConfigurer;
+
+    @Value("${jwt.header}")
+    private String authorizationHeader;
 
     public SecurityConfig(JwtConfigurer jwtConfigurer) {
         this.jwtConfigurer = jwtConfigurer;
@@ -34,6 +39,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/*").permitAll()
                 .anyRequest()
                 .authenticated()
+                .and()
+                .logout()
+                .logoutUrl("/signout")
+                .logoutSuccessUrl("/")
+                .deleteCookies(authorizationHeader)
+                .deleteCookies("JSESSIONID")
+                .clearAuthentication(true)
                 .and()
                 .apply(jwtConfigurer);
     }

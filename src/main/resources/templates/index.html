@@ -5,8 +5,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Best forum</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" />
 </head>
 <body>
-
+<div th:if="${#httpServletRequest.remoteUser}" class="toRight">
+    <span th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    <form th:action="signout" method="get">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
+<div th:if="!${#httpServletRequest.remoteUser}">
+    <form th:action="login" method="get">
+        <input type="submit" value="Sign In"/>
+    </form>
+    <form th:action="signup" method="get">
+        <input type="submit" value="Sign Up"/>
+    </form>
+</div>
 </body>
 </html>
