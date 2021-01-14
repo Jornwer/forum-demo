@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -35,6 +36,12 @@ public class UserService {
         userRepository.save(user);
         log.info("User {} registered", user);
         return user;
+    }
+
+    @Transactional
+    public void updateUsername(String oldUsername, String newUsername){
+        userRepository.updateUsername(newUsername, oldUsername);
+        log.info("User {} updated username to {}", oldUsername, newUsername);
     }
 
     public boolean isUserRegistered(String email){

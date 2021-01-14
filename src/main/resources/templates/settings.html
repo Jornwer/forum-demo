@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <script type="text/javascript" src="settings.js"></script>
+</head>
+<body>
+    <span th:inline="text"> Hello [[${#httpServletRequest.remoteUser}]]!</span>
+    <form class="form-signin">
+        <p>
+            <label for="username" class="sr-only">Username</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="New Username" required="" autofocus="">
+        </p>
+        <input name="oldUsername" type="hidden" th:value="${#httpServletRequest.remoteUser}">
+        <button class="btn btn-lg btn-primary btn-block" type="submit"  onclick="changeUsername(oldUsername, username)">Change username</button>
+    </form>
+</body>
+</html>
