@@ -1,7 +1,6 @@
 package com.jornwer.forumdemo.controller;
 
 import com.jornwer.forumdemo.dto.ArticleDTO;
-import com.jornwer.forumdemo.model.Permission;
 import com.jornwer.forumdemo.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,10 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,11 +39,14 @@ public class ArticleController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('article:create')")
-    public String postArticle(@Validated ArticleDTO article, Errors errors, HttpServletRequest request){
+    public String postArticle(@RequestParam("image") MultipartFile image,
+                              @Validated @ModelAttribute("ArticleDTO") ArticleDTO article,
+                              Errors errors,
+                              HttpServletRequest request){
         if (errors.hasErrors()){
             return "create_article";
         }
-        articleService.saveArticle(article, request.getRemoteUser());
-        return "index";
+        articleService.saveArticle(article, request.getRemoteUser(), image);
+        return "redirect:/";
     }
 }

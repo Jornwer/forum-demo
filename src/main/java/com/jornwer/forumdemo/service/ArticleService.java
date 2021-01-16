@@ -4,9 +4,11 @@ import com.jornwer.forumdemo.dto.ArticleDTO;
 import com.jornwer.forumdemo.model.Article;
 import com.jornwer.forumdemo.model.User;
 import com.jornwer.forumdemo.repository.ArticleRepository;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -23,9 +25,10 @@ public class ArticleService {
         this.userService = userService;
     }
 
-    public void saveArticle(ArticleDTO article, String username){
+    @SneakyThrows
+    public void saveArticle(ArticleDTO article, String username, MultipartFile image){
         User user = userService.findUserByUsername(username).get();
-        Article art = article.toArticle(user);
+        Article art = article.toArticle(user, image);
         articleRepository.save(art);
         log.info("new article with id {}", art.getId());
     }

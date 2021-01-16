@@ -5,16 +5,28 @@
     <title>Create article</title>
 </head>
 <body>
-    <form method="post" th:object="${ArticleDTO}">
+    <form method="post" enctype="multipart/form-data" th:object="${ArticleDTO}">
+        <div th:if="${#fields.hasErrors()}">
+            <p>Please correct the problems below and resubmit.</p>
+        </div>
         <label for="title">Article title</label>
             <br>
         <input type="text" id="title" th:field="*{title}" placeholder="Article title">
+        <p th:if="${#fields.hasErrors('title')}"
+           th:errors="*{title}">
+            Invalid title
+        </p>
             <br>
         <label for="text">Article text</label>
             <br>
         <textarea name="textarea" id="text" cols="30" rows="10" th:field="*{text}"></textarea>
             <br>
-        <input id="image" type="file" accept=".png, .jpg, .jpeg " th:field="*{image}">
+        <p th:if="${#fields.hasErrors('text')}"
+           th:errors="*{text}">
+            Invalid text
+        </p>
+        <label for="image"></label>
+        <input id="image" name="image" type="file" accept=".png, .jpg, .jpeg ">
             <br>
         <button type="submit">Create article</button>
     </form>
