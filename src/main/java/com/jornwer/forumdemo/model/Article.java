@@ -1,11 +1,14 @@
 package com.jornwer.forumdemo.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity(name = "articles")
 @Data
+@NoArgsConstructor
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +30,12 @@ public class Article {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private User user;
+
+    public Article(String text, byte[] image, String articleTitle, int rating, User user) {
+        this.text = text;
+        this.image = image;
+        this.articleTitle = articleTitle;
+        this.rating = rating;
+        this.user = user;
+    }
 }

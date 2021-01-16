@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create article</title>
+</head>
+<body>
+    <form method="post" th:object="${ArticleDTO}">
+        <label for="title">Article title</label>
+            <br>
+        <input type="text" id="title" th:field="*{title}" placeholder="Article title">
+            <br>
+        <label for="text">Article text</label>
+            <br>
+        <textarea name="textarea" id="text" cols="30" rows="10" th:field="*{text}"></textarea>
+            <br>
+        <input id="image" type="file" accept=".png, .jpg, .jpeg " th:field="*{image}">
+            <br>
+        <button type="submit">Create article</button>
+    </form>
+</body>
+</html>

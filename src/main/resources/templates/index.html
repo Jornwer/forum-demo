@@ -16,6 +16,9 @@
     <form th:action="settings" method="get">
         <input type="submit" value="Settings"/>
     </form>
+    <form action="article/add" method="get">
+        <input type="submit" value="New article"/>
+    </form>
 </div>
 <div th:if="!${#httpServletRequest.remoteUser}">
     <form th:action="login" method="get">
