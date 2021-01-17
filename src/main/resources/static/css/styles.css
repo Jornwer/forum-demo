@@ -1,0 +1,12 @@
+.validationError{
+    color: crimson;
+    text-align: center;
+}
+
+.pages{
+    padding: 25px 25px;
+}
+
+.center{
+    text-align: center;
+}

@@ -5,28 +5,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Best forum</title>
-    <link rel="stylesheet" th:href="@{/styles.css}" />
+    <link th:href="@{css/styles.css}" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<div th:if="${#httpServletRequest.remoteUser}" class="toRight">
-    <span th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</span>
-    <form th:action="signout" method="get">
-        <input type="submit" value="Sign Out"/>
-    </form>
-    <form th:action="settings" method="get">
-        <input type="submit" value="Settings"/>
-    </form>
-    <form action="article/add" method="get">
-        <input type="submit" value="New article"/>
-    </form>
-</div>
-<div th:if="!${#httpServletRequest.remoteUser}">
-    <form th:action="login" method="get">
-        <input type="submit" value="Sign In"/>
-    </form>
-    <form th:action="signup" method="get">
-        <input type="submit" value="Sign Up"/>
-    </form>
-</div>
+    <div>
+        <div th:if="${#httpServletRequest.remoteUser}" style="text-align: right">
+            <span th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</span>
+            <form th:action="signout" method="get">
+                <input type="submit" value="Sign Out"/>
+            </form>
+            <form th:action="settings" method="get">
+                <input type="submit" value="Settings"/>
+            </form>
+            <form action="article/add" method="get">
+                <input type="submit" value="New article"/>
+            </form>
+        </div>
+        <div th:if="!${#httpServletRequest.remoteUser}">
+            <form th:action="login" method="get">
+                <input type="submit" value="Sign In"/>
+            </form>
+            <form th:action="signup" method="get">
+                <input type="submit" value="Sign Up"/>
+            </form>
+        </div>
+    </div>
+    <div class="center" th:each="article : ${articles}">
+        <a th:href="@{/article/{id}(id=${article.getId()})}">
+            <h2 th:text="*{article.getArticleTitle()}" ></h2>
+        </a>
+        <span th:text="*{article.getText()}"></span>
+        <div th:if="${article.getImg().length()} != 0">
+            <img th:src="*{'data:image/png;base64,'+article.getImg()}" alt="Article image" width="300" height="200">
+        </div>
+    </div>
+    <br><br>
+    <div class="center" th:value="${pages}">
+        <a class="pages" th:each="page : ${#numbers.sequence(1, pages, 1)}" th:href="*{page}" th:text="*{page}"></a>
+    </div>
 </body>
 </html>

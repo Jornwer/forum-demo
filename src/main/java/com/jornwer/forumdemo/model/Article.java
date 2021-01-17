@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Base64;
 
 @Entity(name = "articles")
 @Data
@@ -31,11 +32,18 @@ public class Article {
     @JoinColumn(name = "author_id", nullable = false)
     private User user;
 
+    @Transient
+    private String img = null;
+
     public Article(String text, byte[] image, String articleTitle, int rating, User user) {
         this.text = text;
         this.image = image;
         this.articleTitle = articleTitle;
         this.rating = rating;
         this.user = user;
+    }
+
+    public void addImg(){
+        img = Base64.getEncoder().encodeToString(image);
     }
 }

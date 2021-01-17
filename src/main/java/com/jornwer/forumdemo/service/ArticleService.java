@@ -7,10 +7,11 @@ import com.jornwer.forumdemo.repository.ArticleRepository;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -31,5 +32,15 @@ public class ArticleService {
         Article art = article.toArticle(user, image);
         articleRepository.save(art);
         log.info("new article with id {}", art.getId());
+    }
+
+    public List<Article> chooseArticles(int page, int size){
+        List<Article> articles = articleRepository.findAll(PageRequest.of(page, size)).toList();
+        articles.forEach(Article::addImg);
+        return articles;
+    }
+
+    public int countAllArticles(){
+        return articleRepository.countAll();
     }
 }
