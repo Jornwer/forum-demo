@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -42,5 +43,9 @@ public class ArticleService {
 
     public int countAllArticles(){
         return articleRepository.countAll();
+    }
+
+    public Article findArticleById(long id){
+        return articleRepository.findById(id).orElse(null);
     }
 }

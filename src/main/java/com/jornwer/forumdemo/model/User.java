@@ -35,4 +35,16 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", login='" + login + '\'' +
+                ", role=" + role +
+                ", status=" + status +
+                '}';
+    }
 }

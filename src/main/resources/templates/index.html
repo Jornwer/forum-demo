@@ -36,7 +36,7 @@
         </a>
         <span th:text="*{article.getText()}"></span>
         <div th:if="${article.getImg().length()} != 0">
-            <img th:src="*{'data:image/png;base64,'+article.getImg()}" alt="Article image" width="300" height="200">
+            <img th:src="*{'data:image/png;base64,'+article.getImg()}" alt="Article image" height="200">
         </div>
     </div>
     <br><br>

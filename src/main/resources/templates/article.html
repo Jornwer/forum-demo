@@ -7,6 +7,14 @@
     <title th:text="${articleTitle}"></title>
 </head>
 <body>
-
+    <div class="center" th:value="${article}">
+        <a th:href="@{/article/{id}(id=${article.getId()})}">
+            <h2 th:text="*{article.getArticleTitle()}" ></h2>
+        </a>
+        <span th:text="*{article.getText()}"></span>
+        <div th:if="${article.getImg() != null}">
+            <img th:src="*{'data:image/png;base64,'+article.getImg()}" alt="Article image" height="200">
+        </div>
+    </div>
 </body>
 </html>

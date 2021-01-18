@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Base64;
 
 @Entity(name = "articles")
@@ -45,5 +46,16 @@ public class Article {
 
     public void addImg(){
         img = Base64.getEncoder().encodeToString(image);
+    }
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", articleTitle='" + articleTitle + '\'' +
+                ", rating=" + rating +
+                ", user=" + user +
+                '}';
     }
 }

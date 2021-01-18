@@ -1,8 +1,10 @@
 package com.jornwer.forumdemo.controller;
 
 import com.jornwer.forumdemo.dto.ArticleDTO;
+import com.jornwer.forumdemo.model.Article;
 import com.jornwer.forumdemo.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,10 +14,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/article/")
 public class ArticleController {
+
+    @Value("${articles.maxArticlesPerPage}")
+    private int maxArticlesPerPage;
 
     private ArticleService articleService;
 
@@ -25,8 +32,17 @@ public class ArticleController {
     }
 
     @GetMapping("{id}")
-    public String showArticle(Model model, @PathVariable("id") int articleId){
-        model.addAttribute("articleTitle", "aaaaa");
+    public String showArticle(Model model, @PathVariable("id") long articleId){
+        Article article = articleService.findArticleById(articleId);
+        if (article == null){
+            int pages = (int) Math.ceil((double) articleService.countAllArticles() / maxArticlesPerPage);
+            model.addAttribute("pages", pages);
+            List<Article> articles = articleService.chooseArticles(0, maxArticlesPerPage);
+            model.addAttribute("articles", articles);
+            return "index";
+        }
+        model.addAttribute("articleTitle", article.getArticleTitle());
+        model.addAttribute("article", article);
         return "article";
     }
 
